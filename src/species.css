@@ -1,0 +1,335 @@
+.study-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  background: #f5f6f2;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+.study-header {
+  padding: 20px 30px;
+  background: #fff;
+  border-bottom: 1px solid #dfe7e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.study-header h1 {
+  font-size: 23px;
+  margin-top: 5px;
+}
+.study-nav {
+  display: flex;
+  padding: 0 30px;
+  border-bottom: 1px solid #dbe3dd;
+  background: #fff;
+  gap: 8px;
+}
+.study-nav button {
+  padding: 15px 18px;
+  border-bottom: 3px solid transparent;
+}
+.study-nav button[aria-current] {
+  color: #126b5c;
+  border-bottom-color: #247f70;
+  font-weight: 650;
+}
+.study-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px 30px 40px;
+}
+.study-content > * {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.study-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 25px;
+  color: #6d7f76;
+}
+.study-stats b {
+  font-size: 24px;
+  color: #1c574b;
+  margin-right: 5px;
+}
+.study-boundary {
+  margin-left: auto;
+  font-size: 12px;
+}
+.study-intro {
+  margin-bottom: 22px;
+}
+.study-intro h2 {
+  font-size: 23px;
+  margin-bottom: 10px;
+}
+.study-intro p,
+.study-content p {
+  line-height: 1.8;
+}
+.study-route {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.study-route article,
+.study-card {
+  background: #fff;
+  border: 1px solid #dfe6df;
+  border-radius: 12px;
+  padding: 22px;
+}
+.study-route small {
+  color: #347363;
+  font-size: 11px;
+}
+.study-route h3 {
+  font-size: 16px;
+  margin: 12px 0;
+}
+.study-route p {
+  color: #5f7068;
+}
+.study-note {
+  background: #eaf0e8;
+  border-left: 3px solid #7e9f88;
+  border-radius: 3px;
+  padding: 14px 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+.study-card {
+  margin-top: 16px;
+  margin-bottom: 18px;
+}
+.study-card summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.study-card p {
+  margin: 10px 0;
+}
+.study-card a {
+  color: #187568;
+}
+.study-editor {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 22px;
+}
+.study-image-list {
+  background: #fff;
+  border-radius: 12px;
+  padding: 9px;
+  align-self: start;
+  max-height: 65vh;
+  overflow: auto;
+}
+.study-image-list button {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 10px;
+  border-radius: 7px;
+  text-align: left;
+}
+.study-image-list button[aria-pressed="true"] {
+  background: #dfede4;
+}
+.study-image-list img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.study-image-list span {
+  min-width: 0;
+}
+.study-image-list b {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.study-image-list small,
+.study-table-wrap small {
+  display: block;
+  margin-top: 5px;
+  color: #728079;
+  font-size: 11px;
+}
+.study-form {
+  margin: 0;
+  min-width: 0;
+  background: #fff;
+  border: 1px solid #dfe6df;
+  border-radius: 12px;
+  padding: 24px;
+}
+.study-form h2 {
+  overflow-wrap: anywhere;
+  margin-bottom: 8px;
+  font-size: 19px;
+}
+.study-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px 22px;
+  margin: 22px 0;
+}
+.study-form label,
+.study-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #4d665b;
+  font-size: 12px;
+}
+.study-form input,
+.study-form select,
+.study-form textarea,
+.study-filters select,
+.study-table-wrap select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #cfdcd3;
+  border-radius: 6px;
+  background: #fff;
+  color: #26483a;
+  font: inherit;
+}
+.study-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.study-form .study-include {
+  flex-direction: row;
+  align-items: center;
+  margin: 14px 0;
+}
+.study-include input {
+  width: 16px;
+  height: 16px;
+  accent-color: #247f70;
+}
+.study-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 15px;
+}
+.study-filters label {
+  min-width: 170px;
+  flex: 1;
+}
+.study-scatter {
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+}
+.study-scatter text {
+  fill: #567064;
+  font-size: 11px;
+}
+.study-table-wrap {
+  overflow: auto;
+  border: 1px solid #dfe6df;
+  border-radius: 10px;
+  background: #fff;
+}
+.study-table-wrap table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 850px;
+}
+.study-table-wrap th {
+  padding: 13px;
+  text-align: left;
+  background: #edf2ec;
+  font-size: 11px;
+  position: static;
+}
+.study-table-wrap td {
+  padding: 13px;
+  border-top: 1px solid #e9eee7;
+  white-space: normal;
+  max-width: 250px;
+  overflow-wrap: anywhere;
+}
+.study-empty {
+  padding: 35px;
+  text-align: center;
+  color: #798b7d;
+}
+.study-audit-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.study-issues {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-bottom: 22px;
+}
+.study-issues p {
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: #f0eee3;
+  font-size: 12px;
+}
+.study-issues p.block {
+  background: #f9eae3;
+}
+.study-issues b {
+  display: inline-block;
+  margin-right: 10px;
+  color: #8a5432;
+}
+.study-footer {
+  padding: 10px 30px;
+  background: #fff;
+  border-top: 1px solid #dde6dc;
+  min-height: 38px;
+  color: #667a6e;
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .study-route {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .study-header,
+  .study-content {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  .study-boundary {
+    margin-left: 0;
+  }
+}
+@media (max-width: 760px) {
+  .study-route,
+  .study-fields,
+  .study-issues,
+  .study-editor {
+    grid-template-columns: 1fr;
+  }
+  .study-image-list {
+    max-height: 160px;
+  }
+  .study-nav {
+    padding: 0 5px;
+  }
+  .study-nav button {
+    padding: 12px 9px;
+  }
+}

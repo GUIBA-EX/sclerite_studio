@@ -1,0 +1,9 @@
+Encoder: timm/mobilenetv4_conv_small.e2400_r224_in1k
+Source: https://huggingface.co/timm/mobilenetv4_conv_small.e2400_r224_in1k
+Model card license: Apache-2.0. Weights by Ross Wightman / timm contributors.
+Architecture: MobileNetV4 (Qin et al., 2024).
+Export: frozen feature extractor, classifier removed; FP32 ONNX opset 18.
+Pretraining data: ImageNet-1k. This is not a trained coral species classifier.
+Full Apache license: https://www.apache.org/licenses/LICENSE-2.0
+ONNX Runtime: MIT, https://github.com/microsoft/onnxruntime/blob/main/LICENSE
+ort Rust wrapper: MIT OR Apache-2.0, https://github.com/pykeio/ort

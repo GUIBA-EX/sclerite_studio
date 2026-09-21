@@ -1,0 +1,30 @@
+name: Build Windows portable (MobileNet)
+on: [workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      # Fresh MobileNet export, not the gated DINOv3 release encoder.
+      - run: python -m pip install torch torchvision timm onnx onnxruntime numpy
+      - run: python scripts/export_encoder.py
+      - run: cargo build --release --locked --manifest-path src-tauri/Cargo.toml
+      - run: node scripts/package-windows.mjs src-tauri/target/release dist/windows-portable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sclerite-studio-windows-x64-mobilenet
+          path: dist/windows-portable/
+          if-no-files-found: error

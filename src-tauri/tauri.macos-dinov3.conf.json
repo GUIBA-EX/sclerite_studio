@@ -1,0 +1,6 @@
+{
+  "bundle": {
+    "resources": ["runtime/libonnxruntime.1.24.2.dylib", "runtime/LICENSE", "runtime/ThirdPartyNotices.txt", "models/LICENSE.txt", "models/Apache-2.0.txt", "models/encoder.json", "models/dinov3/LICENSE.txt", "models/dinov3/encoder.json"],
+    "macOS": {"minimumSystemVersion": "14.0"}
+  }
+}
