@@ -3,12 +3,18 @@
 </p>
 <h1 align="center">Sclerite Studio</h1>
 <p align="center">骨针工作室 · 从光镜照片到可复核的骨针测量与分类</p>
-<p align="center">An offline microscopy workspace for sclerite segmentation, measurement and classification.</p>
 <p align="center"><strong>0.12.3 · 中文 / English · Windows / macOS</strong></p>
+<p align="center"><strong>简体中文</strong> · <a href="README.en.md">English</a></p>
+<p align="center">
+  <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/download/v0.12.3/Sclerite-Studio-0.12.3-bilingual-DINOv3-mac-arm64.zip"><strong>下载 Mac 版</strong></a> ·
+  <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/download/v0.12.3/Sclerite-Studio-0.12.3-Windows-x64-portable.zip"><strong>下载 Windows 绿色版</strong></a> ·
+  <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/tag/v0.12.3">发行说明与 SHA-256</a>
+</p>
+<p align="center">Mac：Apple Silicon · macOS 14+ ｜ Windows：x64 · 需 WebView2 与 Visual C++ 运行库</p>
 
 ---
 
-## 中文
+## 简介
 
 Sclerite Studio 面向八放珊瑚骨针光镜照片，将实例分割、完整性复核、形态测量、分类与科研图版排版放在同一个本地桌面工作区。**首次启动默认中文**，右上角可切换 English，并记住本机选择。
 
@@ -37,27 +43,11 @@ Sclerite Studio 面向八放珊瑚骨针光镜照片，将实例分割、完整�
 
 软件测试不等于生物学准确率验证。模型分数不是真实物种概率；一枚骨针不是独立标本，分类也不等于物种界定。照片、组织、批次、来源和标签质量仍需研究者核查。未校准对象不能用于绝对尺寸比较。
 
-本仓库只存放源码、图标、测试与模型配置/许可文本；不包含研究照片、用户项目、训练缓存或模型二进制。DINOv3 须由使用者合法取得 Meta 权重并遵守其许可。第三方许可见 [models](src-tauri/models/) 与 [runtime](src-tauri/runtime/)。本仓库没有额外授予一份未声明的开源许可证。
+源码仓库只存放源码、图标、测试与模型配置/许可文本，不包含研究照片、用户项目、训练缓存或权重文件。Release 应用包内嵌 MobileNetV4 与 DINOv3 权重，并随附相应许可；使用和再分发须遵守各自条款。自行构建 DINOv3 版本时须合法取得 Meta 权重。第三方许可见 [models](src-tauri/models/) 与 [runtime](src-tauri/runtime/)。本仓库没有额外授予一份未声明的开源许可证。
 
-## English
+## 开发
 
-Sclerite Studio brings light-micrograph segmentation, completeness review, morphometrics, classification and plate layout into one offline desktop workspace. It starts in Chinese; choose **English** at the top right. Switching language preserves images, masks, approvals, layouts and user-authored labels.
-
-### Features
-
-- Segment individual sclerites, split touching groups and edit masks manually.
-- Approve intact objects before exporting measurements; never reconstruct invisible outlines.
-- Calibrate physical scale and measure 2D maximum Feret diameter, width, area, aspect ratio and circularity.
-- Train a lightweight classification head on frozen MobileNetV4 features; optionally use authorized DINOv3 weights. Review predictions without overwriting manual labels.
-- Keep recorded related specimens and sources together for independent evaluation.
-- Compose multi-photo, multi-page plates with long-axis alignment, individual transforms, scale bars and black/white backgrounds.
-- Save editable projects locally and export CSV, crops, masks and PNG plates.
-
-The Windows portable package requires an x64 system, WebView2 and the Visual C++ x64 runtime. Keep the executable with accompanying runtime files. See the [portable guide](docs/WINDOWS-PORTABLE.md). Mac packages target Apple Silicon and macOS 14+. Build checks are not biological validation or Windows hardware testing.
-
-## Development
-
-Frontend: **React · TypeScript · Vite**. Desktop: **Tauri 2 · Rust**. Inference: **ONNX Runtime**, CPU on Windows; MobileNet Core ML CPU/GPU is experimental on Mac. DINOv3 uses CPU. NPU is not enabled.
+前端：**React · TypeScript · Vite**。桌面：**Tauri 2 · Rust**。推理：**ONNX Runtime**；Windows 使用 CPU，Mac 的 MobileNet Core ML CPU/GPU 为实验功能。DINOv3 使用 CPU，不启用 NPU。
 
 ```sh
 npm ci
@@ -65,43 +55,43 @@ npm test
 npm run dev
 ```
 
-The browser supports image processing, layout and label organization. Native training and prediction require a desktop build. Frontend tests do not require model weights.
+浏览器支持图像处理、排版和标签整理；原生训练与预测需要桌面版。前端测试不依赖模型权重。
 
-### Prepare models before a desktop build
+### 构建桌面版前准备模型
 
-The desktop embeds `src-tauri/models/encoder.onnx`, which is deliberately excluded from Git. Export the MobileNet encoder using a separate Python development environment:
+桌面程序嵌入 `src-tauri/models/encoder.onnx`，该权重不放入 Git。使用独立的 Python 开发环境导出 MobileNet 编码器：
 
 ```sh
 python -m venv .venv
-# Activate the environment using the command for your operating system.
+# 按操作系统激活该虚拟环境。
 python -m pip install torch torchvision timm onnx onnxruntime numpy
 python scripts/export_encoder.py
 ```
 
-The exporter checks ONNX output against PyTorch and records versions, hashes and parity results. A new export may have a different hash; do not replace a release encoder if you need cache/model compatibility. Python is a development dependency, not an end-user requirement.
+导出脚本对比 ONNX 与 PyTorch 输出，并记录版本、哈希及一致性结果。重新导出的权重可能具有不同哈希；若需兼容既有缓存与模型，不要替换发行版编码器。Python 仅为开发依赖，用户运行应用无需安装。
 
 ```sh
-# Windows portable build, with Rust MSVC and C++ build tools installed:
+# Windows 绿色版构建：先安装 Rust MSVC 与 C++ 构建工具。
 npm run build
 cargo build --release --locked --manifest-path src-tauri/Cargo.toml
 node scripts/package-windows.mjs
 
-# macOS, after preparing ONNX Runtime 1.24.2 in src-tauri/runtime:
+# macOS：先在 src-tauri/runtime 准备 ONNX Runtime 1.24.2。
 npm run desktop:build -- --config src-tauri/tauri.macos.conf.json --bundles app
 ```
 
-Optional DINOv3 builds require an authorized checkpoint, its license and validation metadata from `scripts/export_dinov3.py`; then add `--features dinov3`. Never commit signed download URLs or personal authorization messages. See [development history](docs/DEVELOPMENT.md) and [verification notes](VERIFICATION.md). Historical local artifact paths in those notes are not repository downloads.
+可选的 DINOv3 构建需要授权检查点、许可及 `scripts/export_dinov3.py` 生成的验证元数据，然后添加 `--features dinov3`。不要提交带签名的下载链接或个人授权信息。详见 [开发记录](docs/DEVELOPMENT.md) 和 [验证说明](VERIFICATION.md)；其中历史本地产物路径不是仓库下载地址。
 
-Browser smoke tests use locally supplied microscopy data. Set `SCLERITE_TEST_DATA` to your MR0145 folder where required. Tests needing a prepared labeled project or native inference fixtures are separate from `npm test`.
+浏览器冒烟测试使用本地提供的显微图像；按需将 `SCLERITE_TEST_DATA` 指向 MR0145 目录。需要标注项目或原生推理数据的测试独立于 `npm test`。
 
-## Repository layout
+## 仓库结构
 
 ```text
-src/                 Interface, segmentation, measurements and layout
-src-tauri/src/       Native inference, model validation and training
-src-tauri/models/    Model metadata and license notices (no weights)
-src-tauri/icons/     Application logo and platform icons
-scripts/            Development-only model export and verification
-tests/              Unit tests and local browser workflows
-docs/               Development history
+src/                 界面、分割、测量与排版
+src-tauri/src/       原生推理、模型验证与训练
+src-tauri/models/    模型元数据与许可（不含权重）
+src-tauri/icons/     应用 logo 与平台图标
+scripts/            开发阶段模型导出与验证
+tests/              单元测试与本地浏览器工作流
+docs/               开发与运行说明
 ```
