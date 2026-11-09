@@ -1,12 +1,11 @@
 import { microscopyFile } from "./data-path.mjs";
 import { chromium, expect } from "@playwright/test";
 import assert from "node:assert/strict";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, sep } from "node:path";
 import JSZip from "jszip";
-const out = decodeURIComponent(
-  new URL("../../UI-0.5验证/", import.meta.url).pathname,
-);
-await mkdir(out, { recursive: true });
+const out = (await mkdtemp(join(tmpdir(), "sclerite-workspace-"))) + sep;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 960 },
@@ -54,7 +53,7 @@ try {
   assert.ok(expandedViewer.width > initialViewer.width + 400);
   await button("图像列表").click();
   await button("处理设置").click();
-  const sep = page.getByRole("separator"),
+  const sep = page.getByRole("separator", { name: "调整测量表高度" }),
     sb = await sep.boundingBox();
   const heightBefore = (await page.locator(".table-scroll").boundingBox())
     .height;
@@ -123,6 +122,7 @@ try {
   await button("图版排版").click();
   await button("载入已确认对象").click();
   await expect(page.getByTestId("plate-item")).toHaveCount(4);
+  await page.getByText("版面设置", { exact: true }).click();
   await expect(button("统一倍率排版")).toBeDisabled();
   const items = page.getByTestId("plate-item");
   await items.nth(0).click();
@@ -131,6 +131,7 @@ try {
   await expect(button("横向等距")).toBeEnabled();
   await button("水平对齐").click();
   await button("横向等距").click();
+  await button("取消选择").click();
   await items.nth(0).click();
   const prior = await items.nth(0).getAttribute("transform");
   await page.keyboard.press("ArrowRight");

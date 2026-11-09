@@ -1,11 +1,10 @@
 import { microscopyFile } from "./data-path.mjs";
 import { chromium, expect } from "@playwright/test";
 import assert from "node:assert/strict";
-import { mkdir, readFile } from "node:fs/promises";
-const out = decodeURIComponent(
-  new URL("../../交互-0.8验证/", import.meta.url).pathname,
-);
-await mkdir(out, { recursive: true });
+import { mkdtemp, readFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, sep } from "node:path";
+const out = (await mkdtemp(join(tmpdir(), "sclerite-interaction-"))) + sep;
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const page = await browser.newPage({
   viewport: { width: 1500, height: 1000 },
@@ -48,14 +47,13 @@ try {
   await page.keyboard.press("Meta+a");
   await expect(page.locator("tbody tr.selected")).toHaveCount(4);
   await expect(page.locator(".approval-checkbox:checked")).toHaveCount(0);
-  await b("取消选择").click();
+  await b("取消全选").click();
   await b("全选当前列表").click();
   await b("确认选中").click();
   await expect(page.locator(".approval-checkbox:checked")).toHaveCount(4);
   console.log(
     "PASS real image: Cmd/Ctrl toggle, keyboard/button select all, explicit batch approval/unapproval",
   );
-  await b("拖动观察").click();
   for (let i = 0; i < 8; i++) await b("放大").click();
   const viewer = page.locator(".viewer");
   await viewer.evaluate((el) => {
@@ -100,6 +98,7 @@ try {
   await expect(selected).toHaveCount(0);
   await b("全选本页").click();
   await expect(selected).toHaveCount(4);
+  await page.getByText("版面设置", { exact: true }).click();
   await page.getByLabel("网格吸附", { exact: true }).uncheck();
   const positions = await items.evaluateAll((els) =>
     els.map((el) => el.getAttribute("transform")),
@@ -123,6 +122,7 @@ try {
   const saved = JSON.parse(await download("保存版面", "隐藏来源版面.json"));
   assert.equal(saved.settings.showSourceNotes, false);
   assert.ok(saved.items.every((i) => i.sourceName === "MR0415_Image018.jpg"));
+  await page.getByLabel("导出图版", { exact: true }).click();
   const png = await download("导出版面PNG", "隐藏来源版面.png");
   const clean = await page.evaluate(
     async (data) => {

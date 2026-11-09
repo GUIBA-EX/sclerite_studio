@@ -1,11 +1,11 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Sclerite Studio",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "identifier": "org.scleritestudio.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://127.0.0.1:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
@@ -36,6 +36,6 @@
     ],
     "category": "Education",
     "shortDescription": "Light-microscopy sclerite segmentation and morphometrics",
-    "macOS": { "minimumSystemVersion": "12.0" }
+    "macOS": { "minimumSystemVersion": "14.0" }
   }
 }

@@ -1,5 +1,12 @@
 # Sclerite Studio · 开发与历史验证记录
 
+## 0.13.0 构建和恢复
+
+- 构建时校验固定 MobileNetV4 编码器的哈希、尺寸及 ONNX Runtime 版本；Release 资产固定为 `models-v1`。验证环境中以 Runtime 1.24.2 对五组随机输入与 PyTorch 进行比对。
+- 撤销记录压缩标签并复用共享缓冲区；恢复副本使用 IndexedDB v2 增量写入，兼容旧版恢复数据。
+- 新增独立分割评估脚本和说明 `docs/EVALUATION.md`，真实人工真值基线待制作和评估。
+- 验证：`npm run build`、`npm test`、`cargo test --locked --manifest-path src-tauri/Cargo.toml`、真实图片工作区及交互冒烟测试；内存和耗时的实际应用测量待测。
+
 面向八放珊瑚骨针光镜照片的本地桌面软件。0.12.3 提供两个功能选项卡：**图像处理 / 分类**。原有测量、完整确认和联合排版保持独立。
 
 ## 0.12.3 中英文界面 / Bilingual interface

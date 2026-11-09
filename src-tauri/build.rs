@@ -1,4 +1,22 @@
 fn main() {
+    {
+        use sha2::{Digest, Sha256};
+        let root = std::path::Path::new("models");
+        for name in ["encoder.onnx", "encoder.json"] {
+            println!("cargo:rerun-if-changed={}", root.join(name).display());
+        }
+        let metadata: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(root.join("encoder.json"))
+                .expect("缺少 MobileNet 配置；请运行 node scripts/fetch-encoder.mjs"),
+        ).expect("MobileNet 配置无效；请检查 models/encoder.json");
+        let bytes = std::fs::read(root.join("encoder.onnx"))
+            .expect("缺少 MobileNet 编码器；请运行 node scripts/fetch-encoder.mjs");
+        assert_eq!(metadata["sha256"], format!("{:x}", Sha256::digest(&bytes)),
+            "MobileNet 编码器哈希不符；请检查模型并运行 node scripts/fetch-encoder.mjs");
+        assert_eq!(metadata["input"], serde_json::json!([1, 3, 256, 256]), "MobileNet 输入尺寸不符");
+        assert_eq!(metadata["output"], serde_json::json!([1, 1280]), "MobileNet 输出尺寸不符");
+        assert_eq!(metadata["onnxruntime"], "1.24.2", "MobileNet 必须使用应用同版本运行库完成一致性验证");
+    }
     if std::env::var_os("CARGO_FEATURE_DINOV3").is_some() {
         use sha2::{Digest, Sha256};
         let root = std::path::Path::new("models/dinov3");

@@ -1,6 +1,6 @@
 [package]
 name = "sclerite-studio"
-version = "0.12.3"
+version = "0.13.0"
 description = "Offline octocoral sclerite light-microscopy workstation"
 edition = "2021"
 

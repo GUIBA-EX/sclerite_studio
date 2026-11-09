@@ -59,12 +59,12 @@ The browser supports image processing, layout and label organization. Native tra
 
 ### Prepare models before a desktop build
 
-The desktop embeds `src-tauri/models/encoder.onnx`, which is deliberately excluded from Git. Export MobileNet in a separate Python development environment:
+The desktop embeds `src-tauri/models/encoder.onnx`, which is deliberately excluded from Git. Run `node scripts/fetch-encoder.mjs` before building to download and verify the pinned model. Set `SCLERITE_ENCODER_URL` to use a mirror. Use a separate Python environment only when developing or validating an encoder:
 
 ```sh
 python -m venv .venv
 # Activate the environment using the command for your operating system.
-python -m pip install torch torchvision timm onnx onnxruntime numpy
+python -m pip install -r requirements-export.txt
 python scripts/export_encoder.py
 ```
 

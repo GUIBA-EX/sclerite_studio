@@ -53,6 +53,7 @@ import ObjectPreview from "./ObjectPreview";
 import { DEFAULT_PLATE_SETTINGS } from "./plate";
 import type { PlateItem, PlateBackground, PlateSettings } from "./plate";
 import { readRecovery, writeRecovery, restoreRecovery } from "./recovery";
+import { snapshot, restore, pushHistory } from "./history";
 import type { Recovery } from "./recovery";
 import PlateEditor from "./PlateEditor";
 import ClassificationStudio from "./ClassificationStudio";
@@ -362,7 +363,7 @@ export default function App() {
         approvedIds: a.approvedIds?.filter((id) => !ids.has(id)),
         splitEvents: a.splitEvents?.filter((g) => g !== group),
       },
-      undo: [...e.undo, { analysis: a, notes: e.notes }].slice(-5),
+      undo: pushHistory(e.undo, snapshot(a, e.notes), 5),
     }));
     selectObject(target);
     setNotice("已恢复该组接触组合；像素未增减，其他组的确认保持不变。");
@@ -380,7 +381,7 @@ export default function App() {
       return {
         ...e,
         analysis: { ...a, approvedIds: [...ids] },
-        undo: [...e.undo, { analysis: a, notes: e.notes }].slice(-20),
+        undo: pushHistory(e.undo, snapshot(a, e.notes), 20),
       };
     });
     setNotice(
@@ -610,7 +611,7 @@ export default function App() {
           },
           notes: {},
           undo: e.analysis
-            ? [...e.undo, { analysis: e.analysis, notes: e.notes }].slice(-5)
+            ? pushHistory(e.undo, snapshot(e.analysis, e.notes), 5)
             : [],
         }));
       }
@@ -656,7 +657,7 @@ export default function App() {
           ],
         },
         undo: e.analysis
-          ? [...e.undo, { analysis: e.analysis, notes: e.notes }].slice(-5)
+          ? pushHistory(e.undo, snapshot(e.analysis, e.notes), 5)
           : [],
       }));
       setSelected((ids) =>
@@ -671,7 +672,7 @@ export default function App() {
   }
   function undo() {
     if (!active || !active.undo.length || busy) return;
-    const prior = active.undo.at(-1)!;
+    const prior = restore(active.undo.at(-1)!);
     if (active.analysis)
       setFuture((f) => ({
         ...f,
@@ -683,14 +684,14 @@ export default function App() {
             f[active.id]?.expectedNotes === active.notes
               ? f[active.id].snapshots
               : []),
-            { analysis: active.analysis!, notes: active.notes },
+            snapshot(active.analysis!, active.notes),
           ],
         },
       }));
     update(active.id, (e) => ({
       ...e,
-      analysis: e.undo.at(-1)!.analysis,
-      notes: e.undo.at(-1)!.notes,
+      analysis: prior.analysis,
+      notes: prior.notes,
       undo: e.undo.slice(0, -1),
     }));
     setSelected([]);
@@ -704,12 +705,12 @@ export default function App() {
       f.expectedNotes !== active.notes
     )
       return;
-    const next = f.snapshots.at(-1)!;
+    const next = restore(f.snapshots.at(-1)!);
     update(active.id, (e) => ({
       ...e,
       ...next,
       undo: e.analysis
-        ? [...e.undo, { analysis: e.analysis, notes: e.notes }].slice(-20)
+        ? pushHistory(e.undo, snapshot(e.analysis, e.notes), 20)
         : e.undo,
     }));
     setFuture((old) => ({

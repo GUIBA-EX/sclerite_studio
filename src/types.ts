@@ -74,7 +74,7 @@ export type ImageEntry = {
   specimen: string;
   tissue: string;
   notes: Record<string, string>;
-  undo: { analysis: Analysis; notes: Record<string, string> }[];
+  undo: import("./history").HistoryEntry[];
 };
 export const DEFAULTS: Parameters = {
   polarity: "dark",

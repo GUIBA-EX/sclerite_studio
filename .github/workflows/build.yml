@@ -12,15 +12,11 @@ jobs:
           node-version: 22
           cache: npm
       - uses: dtolnay/rust-toolchain@stable
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
       - run: npm ci
       - run: npm test
       - run: npm run build
-      # Fresh MobileNet export, not the gated DINOv3 release encoder.
-      - run: python -m pip install torch torchvision timm onnx onnxruntime numpy
-      - run: python scripts/export_encoder.py
+      # Requires the maintainer to publish the pinned models-v1 release asset.
+      - run: node scripts/fetch-encoder.mjs
       - run: cargo build --release --locked --manifest-path src-tauri/Cargo.toml
       - run: node scripts/package-windows.mjs src-tauri/target/release dist/windows-portable
       - uses: actions/upload-artifact@v4

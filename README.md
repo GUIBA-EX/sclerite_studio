@@ -59,12 +59,12 @@ npm run dev
 
 ### 构建桌面版前准备模型
 
-桌面程序嵌入 `src-tauri/models/encoder.onnx`，该权重不放入 Git。使用独立的 Python 开发环境导出 MobileNet 编码器：
+桌面程序嵌入 `src-tauri/models/encoder.onnx`，该权重不放入 Git。构建桌面版前运行 `node scripts/fetch-encoder.mjs` 下载并校验固定模型；如需指定镜像，可设置 `SCLERITE_ENCODER_URL`。仅在开发和验证新编码器时使用独立 Python 环境：
 
 ```sh
 python -m venv .venv
 # 按操作系统激活该虚拟环境。
-python -m pip install torch torchvision timm onnx onnxruntime numpy
+python -m pip install -r requirements-export.txt
 python scripts/export_encoder.py
 ```
 
