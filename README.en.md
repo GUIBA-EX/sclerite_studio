@@ -3,13 +3,14 @@
 </p>
 <h1 align="center">Sclerite Studio</h1>
 <p align="center">An offline microscopy workspace for sclerite segmentation, measurement and classification.</p>
-<p align="center"><strong>0.12.3 · 中文 / English · Windows / macOS</strong></p>
+<p align="center"><strong>Source 0.13.0 · 中文 / English · Windows / macOS</strong></p>
 <p align="center"><a href="README.md">简体中文</a> · <strong>English</strong></p>
 <p align="center">
   <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/download/v0.12.3/Sclerite-Studio-0.12.3-bilingual-DINOv3-mac-arm64.zip"><strong>Download for Mac</strong></a> ·
   <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/download/v0.12.3/Sclerite-Studio-0.12.3-Windows-x64-portable.zip"><strong>Download for Windows</strong></a> ·
   <a href="https://github.com/GUIBA-EX/sclerite_studio/releases/tag/v0.12.3">Release notes & SHA-256</a>
 </p>
+<p align="center">Current downloads: 0.12.3; 0.13.0 application packages are not yet released.</p>
 <p align="center">Mac: Apple Silicon · macOS 14+ | Windows: x64 · WebView2 and Visual C++ runtime required</p>
 
 ---
@@ -26,7 +27,7 @@ Sclerite Studio brings octocoral light-micrograph segmentation, completeness rev
 - **Classification:** manual classes and specimen labels → frozen features → lightweight logistic regression → batch prediction and review. MobileNetV4 is the default; authorized builds also support DINOv3 ViT-S/16.
 - **Grouped evaluation:** check recorded relationships among specimens, colonies, publications and duplicate originals instead of randomly splitting individual sclerites. Trial models do not provide independent validation.
 - **Plate layout:** preserve relative sizes, align along the long axis and move, rotate or scale individual objects. Supports multiple photos/pages, multi-selection, black/white backgrounds, source notes and scale bars.
-- **Local projects:** save originals, masks, approvals, labels and editable layouts; recover local work and export CSV, crops, masks and PNG plates. Photos are not uploaded.
+- **Local projects:** save originals, masks, approvals, labels and editable layouts; recover local work and export CSV, crops, masks and PNG plates. The 0.13.0 source adds incremental recovery and compressed undo history. Photos are not uploaded.
 
 ### Quick start
 
@@ -43,7 +44,7 @@ Sclerite Studio brings octocoral light-micrograph segmentation, completeness rev
 
 Software tests are not biological accuracy validation. Model scores are not true species probabilities; a sclerite is not an independent specimen, and classification is not species delimitation. Researchers must check tissues, batches, sources and label reliability. Uncalibrated objects cannot support absolute-size comparisons.
 
-The source repository contains code, icons, tests, model metadata and license notices—not research photos, user projects, caches or weight files. Release applications embed MobileNetV4 and DINOv3 weights and include their licenses; use and redistribution remain subject to those terms. Obtain authorized Meta weights when building DINOv3 yourself. Third-party notices are in [models](src-tauri/models/) and [runtime](src-tauri/runtime/). No additional, undeclared open-source license is granted for this repository.
+The source repository contains code, icons, tests, model metadata and license notices—not research photos, user projects, caches or weight files. Consult each release package for its included models and licenses; use and redistribution remain subject to their terms. Obtain authorized Meta weights when building DINOv3 yourself. Third-party notices are in [models](src-tauri/models/) and [runtime](src-tauri/runtime/). No additional, undeclared open-source license is granted for this repository.
 
 ## Development
 
@@ -59,16 +60,16 @@ The browser supports image processing, layout and label organization. Native tra
 
 ### Prepare models before a desktop build
 
-The desktop embeds `src-tauri/models/encoder.onnx`, which is deliberately excluded from Git. Run `node scripts/fetch-encoder.mjs` before building to download and verify the pinned model. Set `SCLERITE_ENCODER_URL` to use a mirror. Use a separate Python environment only when developing or validating an encoder:
+The desktop embeds `src-tauri/models/encoder.onnx`, which is deliberately excluded from Git. Run `node scripts/fetch-encoder.mjs` before building to download and verify the pinned model from [models-v1](https://github.com/GUIBA-EX/sclerite_studio/releases/tag/models-v1). Set `SCLERITE_ENCODER_URL` to use a mirror. Use a separate Python environment only when developing or validating an encoder:
 
 ```sh
 python -m venv .venv
 # Activate the environment using the command for your operating system.
 python -m pip install -r requirements-export.txt
-python scripts/export_encoder.py
+python scripts/export_encoder.py --verify-only
 ```
 
-The exporter compares ONNX and PyTorch outputs and records versions, hashes and parity results. A new export may have a different hash; do not replace a release encoder if you need existing cache/model compatibility. Python is a development dependency, not an end-user requirement.
+Verification compares the existing ONNX and PyTorch outputs and updates the verification metadata. Omit `--verify-only` to export a new encoder; the script refuses to overwrite an existing one. A new export may have a different hash and affect cache or model compatibility. Python is a development dependency, not an end-user requirement.
 
 ```sh
 # Windows portable build, with Rust MSVC and C++ build tools installed:
@@ -82,7 +83,7 @@ npm run desktop:build -- --config src-tauri/tauri.macos.conf.json --bundles app
 
 DINOv3 builds require an authorized checkpoint, its license and validation metadata from `scripts/export_dinov3.py`; then add `--features dinov3`. Never commit signed download URLs or personal authorization messages. See [development history](docs/DEVELOPMENT.md) and [verification notes](VERIFICATION.md). Historical local artifact paths in those notes are not repository downloads.
 
-Browser smoke tests use locally supplied microscopy data. Set `SCLERITE_TEST_DATA` to your MR0145 folder where required. Tests needing a labeled project or native inference fixtures are separate from `npm test`.
+Browser smoke tests use locally supplied microscopy data. Set `SCLERITE_TEST_DATA` to your MR0145 folder where required. For segmentation evaluation, set `SCLERITE_EVAL_DATA` to a folder of manually annotated project ZIPs and run `npm run eval:seg`; see the [evaluation guide](docs/EVALUATION.md) for ground-truth and metric definitions. This is separate from `npm test`; a real-data baseline remains to be established.
 
 ## Repository layout
 
